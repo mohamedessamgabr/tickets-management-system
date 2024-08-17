@@ -1,0 +1,17 @@
+spring:
+  application:
+    name:tickets
+  datasource:
+    url: jdbc:postgresql://db:5432/tickets
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+
