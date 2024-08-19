@@ -31,7 +31,7 @@ public class Task extends BaseEntity{
     @Temporal(TemporalType.DATE)
     private LocalDate dateTo;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "category_id")
     private Category category;
 

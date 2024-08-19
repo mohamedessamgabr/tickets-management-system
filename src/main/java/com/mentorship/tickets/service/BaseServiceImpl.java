@@ -1,11 +1,16 @@
 package com.mentorship.tickets.service;
 
 import com.mentorship.tickets.mapper.BaseMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 public class BaseServiceImpl<E, D,
         M extends BaseMapper<E,D>,
@@ -20,7 +25,6 @@ public class BaseServiceImpl<E, D,
     }
 
     @Override
-    @Transactional
     public D save(D dto) {
         E entity = mapper.mapToEntity(dto);
         repository.save(entity);
@@ -43,6 +47,7 @@ public class BaseServiceImpl<E, D,
     }
 
     @Override
+    @Transactional
     public void deleteById(Integer id) {
         D dto = findOneById(id);
         if (dto != null) {
@@ -55,17 +60,42 @@ public class BaseServiceImpl<E, D,
     public List<D> saveMultipleItems(List<D> dTOs) {
         List<E> entitiesList = dTOs
                 .stream()
-                .parallel()
                 .map(mapper::mapToEntity)
                 .toList();
         entitiesList
-                .stream()
-                .parallel()
                 .forEach(repository::save);
         return entitiesList
                 .stream()
-                .parallel()
                 .map(mapper::mapToDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<D> saveMultipleItemsAsynchronously(List<D> dTOs) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        List<D> result = new ArrayList<>();
+        List<Future<D>> futures = new ArrayList<>();
+        for(D dto: dTOs) {
+            Callable<D> task = () -> this.save(dto);
+            Future<D> future = executorService.submit(task);
+            futures.add(future);
+        }
+        executorService.shutdown();
+        for (Future<D> future : futures) {
+            try{
+                result.add(future.get());
+            } catch (Exception e) {
+                throw new RuntimeException("Persisting error");
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Page<D> findpage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(pageable)
+                .map(mapper::mapToDto);
     }
 }

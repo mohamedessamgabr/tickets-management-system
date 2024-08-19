@@ -2,6 +2,7 @@ package com.mentorship.tickets.controller;
 
 import com.mentorship.tickets.service.BaseService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,13 @@ public class BaseController<D> {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<D>> findAll() {
         return ResponseEntity.ok(baseService.findAll());
+    }
+
+    @GetMapping("/page")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Page<D>> findPage(@RequestParam(defaultValue = "1") final int page,
+                                            @RequestParam(defaultValue = "10") final int size) {
+        return ResponseEntity.ok(baseService.findpage(page, size));
     }
 
     @GetMapping(value = "/{id}")
@@ -41,6 +49,14 @@ public class BaseController<D> {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(baseService.saveMultipleItems(dTOs));
+    }
+
+    @PostMapping("/multi-async")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<List<D>> saveMultipleItemsAsynchronously(@RequestBody List<@Valid D> dTOs) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(baseService.saveMultipleItemsAsynchronously(dTOs));
     }
 
     @DeleteMapping(value = "/{id}")
