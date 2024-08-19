@@ -32,6 +32,10 @@ public abstract class TaskMapper implements BaseMapper<Task, TaskDto> {
     @Mapping(target = "dateFrom", source = "taskDto.dateFrom", dateFormat = "dd-MM-yyyy")
     @Mapping(target = "dateTo", source = "taskDto.dateTo", dateFormat = "dd-MM-yyyy")
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "created", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updated", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
     @Override
     public abstract Task mapToEntity(TaskDto taskDto);
 

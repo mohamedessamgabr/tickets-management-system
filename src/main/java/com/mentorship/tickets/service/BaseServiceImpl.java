@@ -1,5 +1,6 @@
 package com.mentorship.tickets.service;
 
+import com.mentorship.tickets.exception.EntityNotFoundException;
 import com.mentorship.tickets.mapper.BaseMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,12 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 
-public class BaseServiceImpl<E, D,
+public abstract class BaseServiceImpl<E, D,
         M extends BaseMapper<E,D>,
         R extends JpaRepository<E, Integer>> implements BaseService<D>{
 
@@ -43,16 +43,16 @@ public class BaseServiceImpl<E, D,
     @Override
     public D findOneById(Integer id) {
         Optional<E> entityOptional = repository.findById(id);
-        return entityOptional.map(mapper::mapToDto).orElse(null);
+        return entityOptional.map(mapper::mapToDto).orElseThrow(
+                () -> new EntityNotFoundException("No entity is found with ID: " + id)
+        );
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
         D dto = findOneById(id);
-        if (dto != null) {
-            repository.deleteById(id);
-        }
+        repository.deleteById(id);
     }
 
     @Override
