@@ -11,13 +11,12 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class LoggingAspect {
 
-    @Around("execution(* com.mentorship.controller..*(..))")
+    @Around("execution(* com.mentorship.tickets.controller..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - start;
         log.info("{} executed in {} ms", joinPoint.getSignature(), executionTime);
-        System.out.println(joinPoint.getSignature() + " executed in " + executionTime + "ms");
         return proceed;
     }
 }
