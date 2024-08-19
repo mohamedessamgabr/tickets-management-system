@@ -43,7 +43,7 @@ public class BaseController<D> {
                 .body(baseService.save(dto));
     }
 
-    @PostMapping("/multi")
+    @PostMapping("/bulk")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<D>> saveMultipleItems(@RequestBody List<@Valid D> dTOs) {
         return ResponseEntity
@@ -51,7 +51,7 @@ public class BaseController<D> {
                 .body(baseService.saveMultipleItems(dTOs));
     }
 
-    @PostMapping("/multi-async")
+    @PostMapping("/bulk-async")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> saveMultipleItemsAsynchronously(@RequestBody List<@Valid D> dTOs) {
         baseService.saveMultipleItemsAsynchronously(dTOs);
