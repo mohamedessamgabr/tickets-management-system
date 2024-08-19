@@ -53,10 +53,10 @@ public class BaseController<D> {
 
     @PostMapping("/multi-async")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<D>> saveMultipleItemsAsynchronously(@RequestBody List<@Valid D> dTOs) {
+    public ResponseEntity<Void> saveMultipleItemsAsynchronously(@RequestBody List<@Valid D> dTOs) {
+        baseService.saveMultipleItemsAsynchronously(dTOs);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(baseService.saveMultipleItemsAsynchronously(dTOs));
+                .status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping(value = "/{id}")

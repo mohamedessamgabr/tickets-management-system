@@ -10,7 +10,6 @@ public interface BaseService<D> {
     D findOneById(Integer id);
     void deleteById(Integer id);
     List<D> saveMultipleItems(List<D> dTOs);
-    List<D> saveMultipleItemsAsynchronously(List<D> dTOs);
+    void saveMultipleItemsAsynchronously(List<D> dTOs);
     Page<D> findpage(int page, int size);
-
 }

@@ -71,25 +71,20 @@ public class BaseServiceImpl<E, D,
     }
 
     @Override
-    @Transactional
-    public List<D> saveMultipleItemsAsynchronously(List<D> dTOs) {
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        List<D> result = new ArrayList<>();
-        List<Future<D>> futures = new ArrayList<>();
-        for(D dto: dTOs) {
-            Callable<D> task = () -> this.save(dto);
-            Future<D> future = executorService.submit(task);
-            futures.add(future);
+    //@Transactional
+    public void saveMultipleItemsAsynchronously(List<D> dTOs) {
+        final int NUMBER_OF_THREADS = 10; // Number of threads in the pool
+        final int BATCH_SIZE = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+        for (int i = 0; i < dTOs.size(); i += BATCH_SIZE) {
+            List<D> batch = dTOs.subList(i, Math.min(i + BATCH_SIZE, dTOs.size()));
+            executorService.submit(() -> {
+                for (D b : batch) {
+                    this.save(b);
+                }
+            });
         }
         executorService.shutdown();
-        for (Future<D> future : futures) {
-            try{
-                result.add(future.get());
-            } catch (Exception e) {
-                throw new RuntimeException("Persisting error");
-            }
-        }
-        return result;
     }
 
     @Override
