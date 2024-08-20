@@ -1,15 +1,15 @@
 package com.mentorship.tickets.service;
 
 import com.mentorship.tickets.dto.CategoryDto;
-import com.mentorship.tickets.entity.Category;
-import com.mentorship.tickets.mapper.CategoryMapper;
-import com.mentorship.tickets.repository.CategoryRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
-@Service
-public class CategoryService extends BaseServiceImpl<Category, CategoryDto,
-        CategoryMapper, CategoryRepository> {
-    public CategoryService(CategoryRepository repository, CategoryMapper mapper) {
-        super(repository, mapper);
-    }
+import java.util.List;
+
+public interface CategoryService {
+    CategoryDto saveCategory(CategoryDto dto);
+    List<CategoryDto> findAllCategories();
+    CategoryDto findCategoryById(Integer id);
+    void deleteCategoryById(Integer id);
+    List<CategoryDto> saveBulkOfCategories(List<CategoryDto> dTOs);
+    Page<CategoryDto> findPageOfCategories(int page, int size);
 }

@@ -4,11 +4,9 @@ import com.mentorship.tickets.dto.TaskDto;
 import com.mentorship.tickets.entity.Category;
 import com.mentorship.tickets.entity.Task;
 import com.mentorship.tickets.exception.CategoryNotFoundException;
+import com.mentorship.tickets.exception.EntityNotFoundException;
 import com.mentorship.tickets.repository.CategoryRepository;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
@@ -31,18 +29,18 @@ public abstract class TaskMapper implements BaseMapper<Task, TaskDto> {
     @Mapping(target = "description", source = "taskDto.description")
     @Mapping(target = "dateFrom", source = "taskDto.dateFrom", dateFormat = "dd-MM-yyyy")
     @Mapping(target = "dateTo", source = "taskDto.dateTo", dateFormat = "dd-MM-yyyy")
-    @Mapping(target = "category", ignore = true)
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updated", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "category", ignore = true)
     @Override
     public abstract Task mapToEntity(TaskDto taskDto);
 
-    @AfterMapping
-    public void setTheCategoryAfterMappingToDto(@MappingTarget Task task, TaskDto dto) {
+    @BeforeMapping
+    public void setTheCategoryBeforeMappingToDto(@MappingTarget Task task, TaskDto dto) {
         Category category = categoryRepository.findByName(dto.getCategory()).orElseThrow(
-                () -> new CategoryNotFoundException("No Category with the name: " + dto.getCategory())
+                () -> new EntityNotFoundException("No Category with the name: " + dto.getCategory())
         );
         task.setCategory(category);
     }
