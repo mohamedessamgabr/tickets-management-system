@@ -1,6 +1,13 @@
 spring:
   application:
     name:tickets
+  cache:
+    type: redis
+  data:
+    redis:
+      host: redis
+      port: 6379
+      time-to-live: 60000
   datasource:
     url: jdbc:postgresql://db:5432/tickets
     username: ${DB_USERNAME:postgres}
@@ -27,5 +34,3 @@ logging:
   level:
     root: INFO
     org.springframework.web: DEBUG
-  file:
-    name: logs/myapp.log

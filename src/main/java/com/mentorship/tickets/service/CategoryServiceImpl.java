@@ -6,6 +6,10 @@ import com.mentorship.tickets.exception.CategoryNotFoundException;
 import com.mentorship.tickets.mapper.CategoryMapper;
 import com.mentorship.tickets.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +22,17 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-
+    private final Logger logger = LogManager.getLogger(CategoryServiceImpl.class);
     @Override
     public CategoryDto saveCategory(CategoryDto dto) {
+        logger.info("saving a category");
         return categoryMapper.mapToDto(categoryRepository
                 .save(categoryMapper.mapToEntity(dto)));
     }
 
     @Override
     public List<CategoryDto> findAllCategories() {
+        logger.info("start getting all categories");
         return categoryRepository
                 .findAll()
                 .stream()
@@ -35,14 +41,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(value = "category", key = "#id")
     public CategoryDto findCategoryById(Integer id) {
+        logger.info("Start getting the category of id {} from database", id);
         return categoryMapper.mapToDto(
                 categoryRepository.findById(id).orElseThrow(
                         () -> new CategoryNotFoundException("No Category is found with ID: "  + id)));
     }
 
     @Override
+    @CacheEvict(value = "category", key = "#id")
     public void deleteCategoryById(Integer id) {
+        logger.info("Start deleting the category of id {} from database", id);
         categoryRepository.deleteById(id);
     }
 

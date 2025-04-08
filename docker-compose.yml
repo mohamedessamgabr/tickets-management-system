@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: postgres
@@ -12,8 +11,18 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
+
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
   api:
-    image: tickets
+    image: tickets:latest
+    container_name: tickets
     build: .
     ports:
       - "8080:8080"
@@ -24,6 +33,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db
+      - redis
 
 volumes:
   db-data:
