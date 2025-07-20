@@ -1,0 +1,34 @@
+server:
+  address: localhost
+  port: 8080
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      time-to-live: 5000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tickets
+    username: ${DB_USERNAME_LOCAL:postgres}
+    password: ${DB_PASSWORD_LOCAL:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 10000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+          order_inserts: true
+          order_updates: true
+    hibernate:
+      ddl-auto: none
+
+logging:
+  config:
+    file: classpath:log4j2-spring.xml

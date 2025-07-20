@@ -21,3 +21,7 @@ insert into task(name, description, date_from, date_to, category_id)
 values('Task 8 Private', 'Task 8 Private Description', CURRENT_DATE, CURRENT_DATE + 20, 3);
 insert into task(name, description, date_from, date_to, category_id)
 values('Task 9 Private', 'Task 9 Private Description', CURRENT_DATE, CURRENT_DATE + 20, 3);
+
+
+insert into app_role(role_name) values('USER');
+insert into app_role(role_name) values('ADMIN');

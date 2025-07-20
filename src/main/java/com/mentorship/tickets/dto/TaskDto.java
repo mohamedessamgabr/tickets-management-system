@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentorship.tickets.validation.ValidDateRange;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,6 +12,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ValidDateRange
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Builder
 public class TaskDto implements Serializable {
     @JsonProperty(value = "task_id")
     private Integer id;

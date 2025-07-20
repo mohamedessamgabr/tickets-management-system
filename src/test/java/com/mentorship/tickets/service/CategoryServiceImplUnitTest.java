@@ -35,7 +35,7 @@ class CategoryServiceImplUnitTest {
     private CategoryDto categoryDto;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         categoryDto = CategoryDto.builder().id(1).name("Category").build();
         category = new Category();
         category.setId(1);

@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,26 +27,20 @@ class CategoryRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
-    @BeforeEach
-    public void setUp() {
-        Category category = new Category();
-        category.setName("Category");
-        category.setId(1);
-        testEntityManager.merge(category);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        Category category = testEntityManager.find(Category.class, 1);
-        Optional.ofNullable(category).ifPresent(testEntityManager::remove);
-    }
-
     @Test
     void findByNameReturnsCategory() {
         Optional<Category> category = categoryRepository.findByName("Category");
+        if (category.isEmpty()) {
+            Category newCategory = new Category();
+            newCategory.setName("Category");
+            testEntityManager.persist(newCategory);
+            testEntityManager.flush();
+            category = categoryRepository.findByName("Category");
+        }
         assertTrue(category.isPresent());
         assertEquals(1, category.get().getId());
         assertEquals("Category", category.get().getName());
+        testEntityManager.remove(category.get());
     }
 
     @Test

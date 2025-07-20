@@ -25,3 +25,33 @@ CREATE TABLE IF NOT EXISTS task (
 
 
 create index task_category_id_idx on task(category_id);
+
+CREATE TABLE IF NOT EXISTS app_user (
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    created TIMESTAMP not null default LOCALTIMESTAMP,
+    updated TIMESTAMP not null default LOCALTIMESTAMP,
+    created_by INT not null default 0,
+    updated_by INT not null default 0
+);
+
+CREATE TABLE IF NOT EXISTS app_role (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    created TIMESTAMP not null default LOCALTIMESTAMP,
+    updated TIMESTAMP not null default LOCALTIMESTAMP,
+    created_by INT not null default 0,
+    updated_by INT not null default 0
+);
+
+CREATE TABLE IF NOT EXISTS app_user_role (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, role_id),
+    constraint user_fk foreign key(user_id) references app_user(user_id),
+    constraint role_fk foreign key(role_id) references app_role(role_id)
+);

@@ -9,13 +9,14 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     @Column(name = "created", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,7 +25,7 @@ public class BaseEntity {
 
     @Column(name = "created_by", nullable = false)
     @CreatedBy
-    private Integer createdBy = 0;
+    private Integer createdBy;
 
     @Column(name = "updated", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -33,5 +34,5 @@ public class BaseEntity {
 
     @Column(name = "updated_by", nullable = false)
     @LastModifiedBy
-    private Integer updatedBy = 0;
+    private Integer updatedBy;
 }
